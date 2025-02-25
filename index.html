@@ -3,107 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crop Prediction</title>
+  <title>Agro Analytica - Crop Prediction</title>
   <style>
     body {
+      margin: 0;
+      padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #81ecec, #74b9ff);
+      background: url('seed.png') no-repeat center center/cover;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
+      color: white;
+      backdrop-filter: blur(4px);
     }
 
     .container {
-      background: white;
+      background: rgba(0, 0, 0, 0.7);
       padding: 30px 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      width: 350px;
+      border-radius: 15px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 100%;
       text-align: center;
     }
 
     h1 {
       margin-bottom: 20px;
-      color: #0984e3;
+      font-size: 2rem;
     }
 
     form {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      gap: 15px;
     }
 
     label {
-      margin-top: 15px;
+      font-weight: bold;
       text-align: left;
-      font-weight: 600;
-      color: #2d3436;
     }
 
     input {
       padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #dfe6e9;
-      border-radius: 10px;
-      transition: border-color 0.3s;
-    }
-
-    input:focus {
-      border-color: #0984e3;
+      border: none;
+      border-radius: 8px;
       outline: none;
+      font-size: 1rem;
     }
 
     button {
-      margin-top: 25px;
       padding: 12px;
-      background: linear-gradient(135deg, #6c5ce7, #0984e3);
+      background-color: #28a745;
       color: white;
-      font-size: 16px;
       border: none;
-      border-radius: 15px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background 0.3s;
+      font-size: 1rem;
+      transition: background 0.3s ease;
     }
 
     button:hover {
-      background: linear-gradient(135deg, #0984e3, #6c5ce7);
+      background-color: #218838;
     }
 
-    button:disabled {
-      background-color: #b2bec3;
-      cursor: not-allowed;
-    }
-
-    .result {
+    #result {
       margin-top: 20px;
+      font-size: 1.2rem;
       font-weight: bold;
-      font-size: 18px;
-      color: #2d3436;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🌾 Crop Prediction</h1>
+    <h1>Agro Analytica</h1>
     <form id="prediction-form">
       <label for="ph">pH Level:</label>
       <input type="number" id="ph" step="0.01" required>
 
       <label for="n">Nitrogen (N):</label>
-      <input type="number" id="n" step="1" required>
+      <input type="number" id="n" step="0.01" required>
 
       <label for="p">Phosphorus (P):</label>
-      <input type="number" id="p" step="1" required>
+      <input type="number" id="p" step="0.01" required>
 
       <label for="k">Potassium (K):</label>
-      <input type="number" id="k" step="1" required>
+      <input type="number" id="k" step="0.01" required>
 
       <label for="temperature">Temperature (°C):</label>
-      <input type="number" id="temperature" step="0.1" required>
+      <input type="number" id="temperature" step="0.01" required>
 
       <label for="humidity">Humidity (%):</label>
-      <input type="number" id="humidity" step="0.1" required>
+      <input type="number" id="humidity" step="0.01" required>
 
       <button type="button" onclick="predictCrop()" id="predict-button">Predict</button>
     </form>
@@ -123,37 +113,31 @@
       const temperature = parseFloat(document.getElementById('temperature').value);
       const humidity = parseFloat(document.getElementById('humidity').value);
 
-      if (!ph || !nitrogen || !phosphorus || !potassium || !temperature || !humidity) {
-          document.getElementById('result').innerText = 'Please fill in all fields with valid values.';
-          button.disabled = false;
-          button.innerText = 'Predict';
-          return;
+      if (isNaN(ph) || isNaN(nitrogen) || isNaN(phosphorus) || isNaN(potassium) || isNaN(temperature) || isNaN(humidity)) {
+        document.getElementById('result').innerText = 'Please fill in all fields with valid numbers.';
+        button.disabled = false;
+        button.innerText = 'Predict';
+        return;
       }
 
       const data = { ph, nitrogen, phosphorus, potassium, temperature, humidity };
 
       fetch('http://127.0.0.1:8000/predict', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
       })
-      .then(response => {
-          if (!response.ok) {
-              return response.json().then(err => { throw new Error(err.error); });
-          }
-          return response.json();
-      })
-      .then(result => {
-          document.getElementById('result').innerText = `🌿 Predicted Crop: ${result.predicted_crop}`;
-      })
-      .catch(error => {
-          document.getElementById('result').innerText = `❌ Error: ${error.message}`;
-          console.error('Error:', error);
-      })
-      .finally(() => {
+        .then(response => response.json())
+        .then(result => {
+          document.getElementById('result').innerText = `Predicted Crop: ${result.predicted_crop}`;
+        })
+        .catch(error => {
+          document.getElementById('result').innerText = `Error: ${error.message}`;
+        })
+        .finally(() => {
           button.disabled = false;
           button.innerText = 'Predict';
-      });
+        });
     }
   </script>
 </body>
