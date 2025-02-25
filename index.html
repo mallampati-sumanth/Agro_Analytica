@@ -122,7 +122,7 @@
 
       const data = { ph, nitrogen, phosphorus, potassium, temperature, humidity };
 
-      fetch('http://127.0.0.1:8000/predict', {
+      fetch('https://agro-analytica.onrender.com/predict', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
