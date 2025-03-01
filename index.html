@@ -10,13 +10,12 @@
       margin:0;
       padding:0;
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-      background:url('https://assets.onecompiler.app/42fq36qvd/43ag72emu/Screenshot%202025-03-01%20093536.png') no-repeat center center/cover;
+      background:url('https://assets.onecompiler.app/42fq36qvd/43ag72emu/Screenshot%202025-03-01%20091823.png') no-repeat center center/cover;
       height:100vh;
       display:flex;
       justify-content:center;
       align-items:center;
       color:white;
-      backdrop-filter:blur(6px);
     }
     .container {
       background:rgba(0,0,0,0.8);
@@ -56,6 +55,14 @@
     input:focus {
       box-shadow:0 0 10px rgba(40,167,69,0.6);
     }
+    input:invalid {
+      border:2px solid red;
+    }
+    .error-message {
+      color: red;
+      font-size: 0.9rem;
+      display: none;
+    }
     button {
       padding:14px;
       background-color:#28a745;
@@ -84,29 +91,54 @@
     <form id="prediction-form">
       <label for="ph">pH Level (2-15):</label>
       <input type="number" id="ph" step="0.01" min="2" max="15" required>
+      <span class="error-message" id="error-ph">Enter a value between 2 and 15</span>
       
       <label for="n">Nitrogen (N) (50-250):</label>
       <input type="number" id="n" step="0.01" min="50" max="250" required>
+      <span class="error-message" id="error-n">Enter a value between 50 and 250</span>
       
       <label for="p">Phosphorus (P) (40-200):</label>
       <input type="number" id="p" step="0.01" min="40" max="200" required>
+      <span class="error-message" id="error-p">Enter a value between 40 and 200</span>
       
       <label for="k">Potassium (K) (30-200):</label>
       <input type="number" id="k" step="0.01" min="30" max="200" required>
+      <span class="error-message" id="error-k">Enter a value between 30 and 200</span>
       
       <label for="temperature">Temperature (°C) (15-45):</label>
       <input type="number" id="temperature" step="0.01" min="15" max="45" required>
+      <span class="error-message" id="error-temperature">Enter a value between 15 and 45</span>
       
       <label for="humidity">Humidity (%) (30-100):</label>
       <input type="number" id="humidity" step="0.01" min="30" max="100" required>
+      <span class="error-message" id="error-humidity">Enter a value between 30 and 100</span>
       
-      <button type="button" onclick="predictCrop()" id="predict-button">Predict</button>
+      <button type="submit">Predict</button>
     </form>
-    <div id="result" class="result"></div>
+    <div id="result"></div>
   </div>
   
   <script>
-    function predictCrop() {
+    function validateAndPredict() {
+      let isValid=true;
+      document.querySelectorAll('input').forEach(input=>{
+        let errorSpan=document.getElementById('error-'+input.id);
+        if(!input.checkValidity()) {
+          input.style.border='2px solid red';
+          errorSpan.style.display='block';
+          isValid=false;
+        } else {
+          input.style.border='';
+          errorSpan.style.display='none';
+        }
+      });
+      if(!isValid) {
+        document.getElementById('result').innerText='Please enter valid values in the given range.';
+        return;
+      }
+      document.getElementById('result').innerText='Processing...';
+      // Your prediction logic here
+      function predictCrop() {
       const button=document.getElementById('predict-button');
       button.disabled=true;
       button.innerText='Predicting...';
@@ -143,6 +175,7 @@
         button.disabled=false;
         button.innerText='Predict';
       });
+    }
     }
   </script>
 </body>
