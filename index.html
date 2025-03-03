@@ -10,24 +10,30 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      background: url('https://assets.onecompiler.app/42fq36qvd/43ag72emu/Screenshot%202025-03-01%20093536.png') no-repeat center center/cover; /* Add your background photo here */
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       color: white;
       overflow: hidden;
-      animation: gradientAnimation 10s ease infinite;
+      position: relative;
     }
 
-    @keyframes gradientAnimation {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    /* Overlay to improve readability */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5); /* Dark overlay for better contrast */
+      z-index: 0;
     }
 
     .container {
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
       padding: 30px 40px;
       border-radius: 15px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
@@ -35,6 +41,8 @@
       width: 100%;
       text-align: center;
       animation: fadeIn 1s ease-in-out;
+      position: relative;
+      z-index: 1;
     }
 
     @keyframes fadeIn {
