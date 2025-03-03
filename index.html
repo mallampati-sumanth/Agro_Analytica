@@ -7,81 +7,141 @@
   <title>Agro Analytica - Crop Prediction</title>
   <style>
     body {
-      margin:0;
-      padding:0;
-      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-      background:url('https://assets.onecompiler.app/42fq36qvd/43ag72emu/Screenshot%202025-03-01%20091823.png') no-repeat center center/cover;
-      height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      color:white;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      overflow: hidden;
+      animation: gradientAnimation 10s ease infinite;
     }
+
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
     .container {
-      background:rgba(0,0,0,0.8);
-      padding:35px 45px;
-      border-radius:20px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.4);
-      max-width:420px;
-      width:100%;
-      text-align:center;
-      animation:fadeIn 0.8s ease-in-out;
+      background: rgba(0, 0, 0, 0.75);
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      max-width: 450px;
+      width: 100%;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
     }
+
     @keyframes fadeIn {
-      from {opacity:0;transform:translateY(-20px);}
-      to {opacity:1;transform:translateY(0);}
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
+
     h1 {
-      margin-bottom:25px;
-      font-size:2.2rem;
-      text-shadow:2px 2px 4px rgba(0,0,0,0.5);
+      margin-bottom: 20px;
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #28a745;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
+
     form {
-      display:grid;
-      gap:18px;
+      display: grid;
+      gap: 15px;
     }
+
     label {
-      font-weight:bold;
-      text-align:left;
+      font-weight: bold;
+      text-align: left;
+      font-size: 0.95rem;
+      color: #ddd;
     }
+
     input {
-      padding:12px;
-      border:none;
-      border-radius:10px;
-      outline:none;
-      font-size:1rem;
-      transition:0.3s;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
     }
+
     input:focus {
-      box-shadow:0 0 10px rgba(40,167,69,0.6);
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 8px rgba(40, 167, 69, 0.5);
     }
-    input:invalid {
-      border:2px solid red;
+
+    button {
+      padding: 12px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
     }
-    .error-message {
-      color: red;
+
+    button:hover {
+      background-color: #218838;
+      transform: scale(1.05);
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #28a745;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .predicted-crop {
+      font-size: 1.6rem;
+      color: #ffdd57;
+      text-shadow: 0 0 10px #ffdd57, 0 0 20px #ffdd57;
+      animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ffdd57, 0 0 20px #ffdd57; }
+      to { text-shadow: 0 0 20px #ffdd57, 0 0 30px #ffdd57; }
+    }
+
+    .error {
+      color: #ff6b6b;
       font-size: 0.9rem;
+      text-align: left;
+      margin-top: 5px;
       display: none;
     }
-    button {
-      padding:14px;
-      background-color:#28a745;
-      color:white;
-      border:none;
-      border-radius:12px;
-      cursor:pointer;
-      font-size:1.1rem;
-      transition:0.3s;
+
+    .loading-spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid #28a745;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+      display: none;
     }
-    button:hover {
-      background-color:#218838;
-      transform:scale(1.05);
-    }
-    #result {
-      margin-top:22px;
-      font-size:1.3rem;
-      font-weight:bold;
-      text-shadow:1px 1px 3px rgba(0,0,0,0.5);
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -89,93 +149,117 @@
   <div class="container">
     <h1>Agro Analytica</h1>
     <form id="prediction-form">
-      <label for="ph">pH Level (2-15):</label>
-      <input type="number" id="ph" step="0.01" min="2" max="15" required>
-      <span class="error-message" id="error-ph">Enter a value between 2 and 15</span>
-      
-      <label for="n">Nitrogen (N) (50-250):</label>
-      <input type="number" id="n" step="0.01" min="50" max="250" required>
-      <span class="error-message" id="error-n">Enter a value between 50 and 250</span>
-      
-      <label for="p">Phosphorus (P) (40-200):</label>
-      <input type="number" id="p" step="0.01" min="40" max="200" required>
-      <span class="error-message" id="error-p">Enter a value between 40 and 200</span>
-      
-      <label for="k">Potassium (K) (30-200):</label>
-      <input type="number" id="k" step="0.01" min="30" max="200" required>
-      <span class="error-message" id="error-k">Enter a value between 30 and 200</span>
-      
-      <label for="temperature">Temperature (°C) (15-45):</label>
-      <input type="number" id="temperature" step="0.01" min="15" max="45" required>
-      <span class="error-message" id="error-temperature">Enter a value between 15 and 45</span>
-      
-      <label for="humidity">Humidity (%) (30-100):</label>
-      <input type="number" id="humidity" step="0.01" min="30" max="100" required>
-      <span class="error-message" id="error-humidity">Enter a value between 30 and 100</span>
-      
-      <button type="submit">Predict</button>
+      <label for="ph">pH Level (0-14):</label>
+      <input type="number" id="ph" step="0.01" required>
+      <div id="ph-error" class="error">pH must be between 0 and 14.</div>
+
+      <label for="n">Nitrogen (N) (0-200):</label>
+      <input type="number" id="n" step="0.01" required>
+      <div id="n-error" class="error">Nitrogen must be between 0 and 200.</div>
+
+      <label for="p">Phosphorus (P) (0-200):</label>
+      <input type="number" id="p" step="0.01" required>
+      <div id="p-error" class="error">Phosphorus must be between 0 and 200.</div>
+
+      <label for="k">Potassium (K) (0-200):</label>
+      <input type="number" id="k" step="0.01" required>
+      <div id="k-error" class="error">Potassium must be between 0 and 200.</div>
+
+      <label for="temperature">Temperature (°C) (-10 to 50):</label>
+      <input type="number" id="temperature" step="0.01" required>
+      <div id="temperature-error" class="error">Temperature must be between -10 and 50.</div>
+
+      <label for="humidity">Humidity (%) (0-100):</label>
+      <input type="number" id="humidity" step="0.01" required>
+      <div id="humidity-error" class="error">Humidity must be between 0 and 100.</div>
+
+      <button type="button" onclick="validateInputs()" id="predict-button">Predict</button>
     </form>
-    <div id="result"></div>
+    <div class="loading-spinner" id="loading-spinner"></div>
+    <div id="result" class="result"></div>
   </div>
-  
+
   <script>
-    function validateAndPredict() {
-      let isValid=true;
-      document.querySelectorAll('input').forEach(input=>{
-        let errorSpan=document.getElementById('error-'+input.id);
-        if(!input.checkValidity()) {
-          input.style.border='2px solid red';
-          errorSpan.style.display='block';
-          isValid=false;
-        } else {
-          input.style.border='';
-          errorSpan.style.display='none';
-        }
-      });
-      if(!isValid) {
-        document.getElementById('result').innerText='Please enter valid values in the given range.';
-        return;
+    function validateInputs() {
+      const ph = parseFloat(document.getElementById('ph').value);
+      const nitrogen = parseFloat(document.getElementById('n').value);
+      const phosphorus = parseFloat(document.getElementById('p').value);
+      const potassium = parseFloat(document.getElementById('k').value);
+      const temperature = parseFloat(document.getElementById('temperature').value);
+      const humidity = parseFloat(document.getElementById('humidity').value);
+
+      // Reset error messages
+      document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+
+      // Validate ranges
+      let isValid = true;
+
+      if (isNaN(ph) || ph < 0 || ph > 14) {
+        document.getElementById('ph-error').style.display = 'block';
+        isValid = false;
       }
-      document.getElementById('result').innerText='Processing...';
-      // Your prediction logic here
-      function predictCrop() {
-      const button=document.getElementById('predict-button');
-      button.disabled=true;
-      button.innerText='Predicting...';
-      
-      const ph=parseFloat(document.getElementById('ph').value);
-      const nitrogen=parseFloat(document.getElementById('n').value);
-      const phosphorus=parseFloat(document.getElementById('p').value);
-      const potassium=parseFloat(document.getElementById('k').value);
-      const temperature=parseFloat(document.getElementById('temperature').value);
-      const humidity=parseFloat(document.getElementById('humidity').value);
-      
-      if(isNaN(ph)||isNaN(nitrogen)||isNaN(phosphorus)||isNaN(potassium)||isNaN(temperature)||isNaN(humidity)) {
-        document.getElementById('result').innerText='Please fill in all fields with valid numbers.';
-        button.disabled=false;
-        button.innerText='Predict';
-        return;
+      if (isNaN(nitrogen) || nitrogen < 0 || nitrogen > 200) {
+        document.getElementById('n-error').style.display = 'block';
+        isValid = false;
       }
-      
-      const data={ph,nitrogen,phosphorus,potassium,temperature,humidity};
-      
-      fetch('https://agro-analytica.onrender.com/predict',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(data)
-      })
-      .then(response=>response.json())
-      .then(result=>{
-        document.getElementById('result').innerText=`Predicted Crop: ${result.predicted_crop}`;
-      })
-      .catch(error=>{
-        document.getElementById('result').innerText=`Error: ${error.message}`;
-      })
-      .finally(()=>{
-        button.disabled=false;
-        button.innerText='Predict';
-      });
+      if (isNaN(phosphorus) || phosphorus < 0 || phosphorus > 200) {
+        document.getElementById('p-error').style.display = 'block';
+        isValid = false;
+      }
+      if (isNaN(potassium) || potassium < 0 || potassium > 200) {
+        document.getElementById('k-error').style.display = 'block';
+        isValid = false;
+      }
+      if (isNaN(temperature) || temperature < -10 || temperature > 50) {
+        document.getElementById('temperature-error').style.display = 'block';
+        isValid = false;
+      }
+      if (isNaN(humidity) || humidity < 0 || humidity > 100) {
+        document.getElementById('humidity-error').style.display = 'block';
+        isValid = false;
+      }
+
+      if (isValid) {
+        predictCrop();
+      }
     }
+
+    function predictCrop() {
+      const button = document.getElementById('predict-button');
+      const spinner = document.getElementById('loading-spinner');
+      const resultDiv = document.getElementById('result');
+
+      button.disabled = true;
+      button.innerText = 'Predicting...';
+      spinner.style.display = 'block';
+      resultDiv.innerText = '';
+
+      const ph = parseFloat(document.getElementById('ph').value);
+      const nitrogen = parseFloat(document.getElementById('n').value);
+      const phosphorus = parseFloat(document.getElementById('p').value);
+      const potassium = parseFloat(document.getElementById('k').value);
+      const temperature = parseFloat(document.getElementById('temperature').value);
+      const humidity = parseFloat(document.getElementById('humidity').value);
+
+      const data = { ph, nitrogen, phosphorus, potassium, temperature, humidity };
+
+      fetch('https://agro-analytica.onrender.com/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(result => {
+          resultDiv.innerHTML = `Predicted Crop: <span class="predicted-crop">${result.predicted_crop}</span>`;
+        })
+        .catch(error => {
+          resultDiv.innerText = `Error: ${error.message}`;
+        })
+        .finally(() => {
+          button.disabled = false;
+          button.innerText = 'Predict';
+          spinner.style.display = 'none';
+        });
     }
   </script>
 </body>
